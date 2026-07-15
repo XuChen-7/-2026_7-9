@@ -101,11 +101,70 @@
 
   .empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
 
-  @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
-    .modal { padding: 24px 18px; }
-    .phase-tabs { flex-direction: column; gap: 2px; }
-    .phase-tab { border-radius: 8px; text-align: left; padding: 10px 16px; }
+  /* ─────────── mobile / tablet ─────────── */
+  @media (max-width: 768px) {
+    .topbar { padding: 14px 0 0; position: sticky; }
+    .topbar-inner { padding: 0 14px; }
+    .topbar h1 { font-size: 20px; }
+    .topbar .sub { font-size: 12px; }
+
+    .phase-tabs { margin-top: 10px; padding: 0 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .phase-tab { flex: none; min-width: 70vw; font-size: 12px; padding: 10px 14px; border-radius: 10px 10px 0 0; white-space: normal; text-align: left; }
+    .phase-tab.active { border-radius: 10px 10px 0 0; }
+
+    .phase-content { padding: 0 8px; }
+    .phase-rec { padding: 14px 14px; border-radius: 0 0 10px 10px; }
+    .phase-rec p { font-size: 12px; }
+
+    .main { padding: 14px 10px; }
+
+    .controls { flex-direction: column; gap: 8px; }
+    .search-box { width: 100%; min-width: unset; }
+    .search-box input { font-size: 16px; /* iOS zoom fix */ padding: 10px 16px 10px 36px; }
+    .filter-btns { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
+    .filter-btn, .all-btn, .clear-btn { font-size: 12px; padding: 7px 12px; }
+
+    .grid { grid-template-columns: 1fr; gap: 10px; }
+
+    .card { padding: 14px 15px; border-radius: 10px; }
+    .card-header { flex-wrap: wrap; }
+    .card-code { font-size: 12px; padding: 2px 8px; }
+    .card-title { font-size: 14px; }
+    .card-desc { font-size: 12px; -webkit-line-clamp: 3; }
+    .card-meta { font-size: 11px; }
+    .card-tags { gap: 4px; }
+    .card-tag, .phase-dot { font-size: 10px; padding: 2px 6px; }
+    .card .expand-hint { font-size: 10px; }
+
+    .overlay { padding: 16px 8px 40px; align-items: flex-start; }
+    .modal { padding: 22px 16px; border-radius: 12px; max-width: 100%; }
+    .modal-close { top: 12px; right: 14px; width: 32px; height: 32px; font-size: 16px; }
+    .modal-code { font-size: 18px; }
+    .modal-title { font-size: 17px; }
+    .modal-meta { font-size: 12px; gap: 10px; margin-bottom: 14px; }
+    .modal-section { margin-bottom: 16px; }
+    .modal-section h3 { font-size: 13px; }
+    .modal-section p, .modal-section li { font-size: 12.5px; line-height: 1.7; }
+    .modal-section .why-box { font-size: 12px; padding: 12px 14px; }
+    .modal-section ol, .modal-section ul { padding-left: 18px; }
+
+    .phase-bar { gap: 5px; }
+    .phase-dot { font-size: 10px; }
+
+    .empty { padding: 40px 16px; font-size: 14px; }
+    .stats { font-size: 11px; margin-bottom: 10px; }
+  }
+
+  /* extra small phones */
+  @media (max-width: 400px) {
+    .topbar h1 { font-size: 18px; }
+    .topbar .sub { font-size: 11px; }
+    .phase-tab { min-width: 80vw; font-size: 11px; padding: 9px 12px; }
+    .filter-btn, .all-btn, .clear-btn { font-size: 11px; padding: 6px 10px; }
+    .card { padding: 12px 13px; }
+    .card-title { font-size: 13px; }
+    .modal { padding: 18px 14px; }
+    .modal-title { font-size: 15px; }
   }
 </style>
 </head>
@@ -786,9 +845,10 @@ function switchPhase(p) {
 }
 
 function toggleFilter(bank) {
-  const idx = activeFilters.indexOf(bank);
+  const upper = bank.toUpperCase();
+  const idx = activeFilters.indexOf(upper);
   if (idx > -1) activeFilters.splice(idx,1);
-  else activeFilters.push(bank);
+  else activeFilters.push(upper);
   updateFilterBtns();
   render();
 }
@@ -815,7 +875,7 @@ function updateFilterBtns() {
   } else {
     allBtn.classList.add('inactive');
     btns.forEach(b => {
-      const bank = b.textContent.trim().split(' ')[1];
+      const bank = b.textContent.trim().split(' ')[1].toUpperCase();
       b.className = 'filter-btn ' + (activeFilters.includes(bank) ? bank.toLowerCase()+'-active' : '');
     });
   }
