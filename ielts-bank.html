@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS 学习银行 ┃ Module Bank</title>
+<style>
+  :root {
+    --a: #4A90D9; --a-bg: #E8F1FB; --a-border: #B8D4F0;
+    --b: #4CAF50; --b-bg: #E8F5E9; --b-border: #C8E6C9;
+    --c: #F5A623; --c-bg: #FFF8E1; --c-border: #FFECB3;
+    --d: #E53935; --d-bg: #FFEBEE; --d-border: #FFCDD2;
+    --e: #7E57C2; --e-bg: #EDE7F6; --e-border: #D1C4E9;
+    --f: #795548; --f-bg: #EFEBE9; --f-border: #D7CCC8;
+    --base: #1a1a2e; --surface: #fff; --text: #333; --muted: #777;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif; background: #f5f6fa; color: var(--text); line-height: 1.6; }
+  .topbar { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); color: #fff; padding: 20px 0 0; position: sticky; top: 0; z-index: 100; }
+  .topbar-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .topbar h1 { font-size: 26px; letter-spacing: 2px; }
+  .topbar .sub { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+  .phase-tabs { display: flex; gap: 0; margin-top: 14px; max-width: 1280px; margin-left: auto; margin-right: auto; padding: 0 24px; }
+  .phase-tab { flex: 1; text-align: center; padding: 12px 8px; cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 10px 10px 0 0; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); transition: all .2s; border: none; outline: none; }
+  .phase-tab:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .phase-tab.active { background: #f5f6fa; color: var(--base); }
+  .phase-content { max-width: 1280px; margin: 0 auto; padding: 0 24px; display: none; }
+  .phase-content.active { display: block; }
+  .phase-rec { background: var(--surface); border-radius: 0 0 12px 12px; padding: 18px 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .phase-rec .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-right: 6px; margin-bottom: 4px; }
+  .phase-rec p { margin: 6px 0 0; font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .phase-rec strong { color: var(--base); }
+
+  .main { max-width: 1280px; margin: 0 auto; padding: 24px; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+  .search-box { flex: 1; min-width: 220px; position: relative; }
+  .search-box input { width: 100%; padding: 10px 16px 10px 36px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px; outline: none; transition: border .2s; }
+  .search-box input:focus { border-color: var(--a); }
+  .search-box .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; color: #aaa; }
+  .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-btn { padding: 8px 16px; border-radius: 20px; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; transition: all .2s; }
+  .filter-btn:hover { border-color: #bbb; }
+  .filter-btn.a-active { background: var(--a); color: #fff; border-color: var(--a); }
+  .filter-btn.b-active { background: var(--b); color: #fff; border-color: var(--b); }
+  .filter-btn.c-active { background: var(--c); color: #fff; border-color: var(--c); }
+  .filter-btn.d-active { background: var(--d); color: #fff; border-color: var(--d); }
+  .filter-btn.e-active { background: var(--e); color: #fff; border-color: var(--e); }
+  .filter-btn.f-active { background: var(--f); color: #fff; border-color: var(--f); }
+  .all-btn { padding: 8px 16px; border-radius: 20px; border: 2px solid #333; background: #333; color: #fff; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .all-btn.inactive { background: #fff; color: #333; border-color: #e0e0e0; }
+  .clear-btn { padding: 8px 14px; border-radius: 20px; border: 2px solid #e0e0e0; background: #fff; cursor: pointer; font-size: 12px; color: #999; }
+
+  .stats { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+
+  .card { background: #fff; border-radius: 12px; padding: 18px 20px; cursor: pointer; transition: all .2s; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-left: 5px solid transparent; position: relative; }
+  .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); transform: translateY(-2px); }
+  .card.a { border-left-color: var(--a); } .card.b { border-left-color: var(--b); }
+  .card.c { border-left-color: var(--c); } .card.d { border-left-color: var(--d); }
+  .card.e { border-left-color: var(--e); } .card.f { border-left-color: var(--f); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .card-code { font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 14px; letter-spacing: 0.5px; }
+  .card-code.a { background: var(--a-bg); color: var(--a); }
+  .card-code.b { background: var(--b-bg); color: var(--b); }
+  .card-code.c { background: var(--c-bg); color: var(--c); }
+  .card-code.d { background: var(--d-bg); color: var(--d); }
+  .card-code.e { background: var(--e-bg); color: var(--e); }
+  .card-code.f { background: var(--f-bg); color: var(--f); }
+  .card-meta { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+  .card-meta span { display: inline-flex; align-items: center; gap: 3px; }
+  .card-title { font-size: 15px; font-weight: 700; margin: 10px 0 6px; }
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-tags { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+  .card-tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #f0f0f0; color: #888; }
+  .card-tag.target { background: #FFF3E0; color: #E65100; }
+  .card .expand-hint { font-size: 11px; color: #bbb; margin-top: 8px; text-align: right; }
+
+  .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); z-index: 200; justify-content: center; align-items: flex-start; padding: 40px 16px 80px; overflow-y: auto; }
+  .overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; max-width: 700px; width: 100%; padding: 32px 28px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: popIn .25s ease; }
+  @keyframes popIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-close { position: absolute; top: 16px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: #f0f0f0; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+  .modal-close:hover { background: #ddd; }
+  .modal-code { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .modal-meta { font-size: 13px; color: var(--muted); margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .modal-section h3 .ico { font-size: 16px; }
+  .modal-section p, .modal-section li { font-size: 13.5px; color: #555; line-height: 1.8; }
+  .modal-section ol, .modal-section ul { padding-left: 20px; }
+  .modal-section li { margin-bottom: 4px; }
+  .modal-section .why-box { background: #f8f9ff; border-radius: 10px; padding: 14px 16px; border-left: 3px solid var(--e); font-size: 13px; color: #555; line-height: 1.7; }
+
+  .phase-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .phase-dot { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+  .phase-dot.s { background: #E3F2FD; color: #1565C0; } /* summer */
+  .phase-dot.t { background: #FCE4EC; color: #C62828; } /* school */
+  .phase-dot.f { background: #F3E5F5; color: #6A1B9A; } /* autumn */
+
+  .empty { text-align: center; padding: 60px 20px; color: #aaa; font-size: 15px; }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .modal { padding: 24px 18px; }
+    .phase-tabs { flex-direction: column; gap: 2px; }
+    .phase-tab { border-radius: 8px; text-align: left; padding: 10px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <h1>IELTS 自学银行 · Module Bank</h1>
+    <div class="sub">听力驱动 · 语法急救 · 模块自选 · 积分制执行</div>
+  </div>
+  <div class="phase-tabs">
+    <button class="phase-tab active" onclick="switchPhase('summer')">☀️ 阶段一：暑假 · 微习惯建立期（现在→8月中）</button>
+    <button class="phase-tab" onclick="switchPhase('school')">📚 阶段二：开学缓冲 · 保温维持期（8月中→9月中）</button>
+    <button class="phase-tab" onclick="switchPhase('autumn')">🍂 阶段三：秋假集训 · 能力跃升期（9月中→10月中）</button>
+  </div>
+</div>
+
+<div class="phase-content active" id="phase-summer">
+  <div class="phase-rec">
+    <span class="tag" style="background:#E3F2FD;color:#1565C0;">☀️ 暑假</span><strong>目标：语法基础修复 + 听力优势转化启动 + 建立学习习惯</strong>
+    <p>建议节奏：<strong>每周完成 6-8 个模块</strong>（约5-7小时/周，每天30-60分钟）<br>
+    必做优先级：🔴 A5（每日一句长难句）> C1（Shadowing跟读）> B2（同义替换）> E1（口语录音）<br>
+    推荐多看 🟦 Bank A（语法急救）和 🟨 Bank C（听力优势转化），语法和听力是暑假的双主线。</p>
+  </div>
+</div>
+<div class="phase-content" id="phase-school">
+  <div class="phase-rec">
+    <span class="tag" style="background:#FCE4EC;color:#C62828;">📚 开学</span><strong>目标：不退步，维持输入量，重点在听力+词汇</strong>
+    <p>建议节奏：<strong>每周 3-4 个模块</strong>（约3-4小时/周，集中在周末1天+周中1个晚上）<br>
+    核心：A5（长难句）尽量不断 | C1（Shadowing）每周至少2次 | B2（同义替换）每周至少2次<br>
+    推荐用碎片时间优先选 🟩 Bank B（词汇基建）和 🟪 Bank E（口语输出）的短模块。</p>
+  </div>
+</div>
+<div class="phase-content" id="phase-autumn">
+  <div class="phase-rec">
+    <span class="tag" style="background:#F3E5F5;color:#6A1B9A;">🍂 秋假</span><strong>目标：从6/6.5冲击7.5，全科爆发</strong>
+    <p>建议节奏：<strong>每天 3-5 个模块</strong>（约2-3小时/天）<br>
+    上午以输入为主（C1 + A5 + B2），下午练输出（D4阅读 + F2写作），晚上练口语（E2故事银行）<br>
+    每周必须覆盖：🟦🟩🟨🟥🟪🟫 每个Bank至少碰1次</p>
+  </div>
+</div>
+
+<div class="main">
+  <div class="controls">
+    <div class="search-box">
+      <span class="icon">🔍</span>
+      <input type="text" id="search" placeholder="搜索编号、标题、内容…（如 A1 / 长难句 / Shadowing）" oninput="render()">
+    </div>
+    <div class="filter-btns">
+      <button class="all-btn" id="allBtn" onclick="filterAll()">全部</button>
+      <button class="filter-btn" onclick="toggleFilter('a')">🟦 A 语法</button>
+      <button class="filter-btn" onclick="toggleFilter('b')">🟩 B 词汇</button>
+      <button class="filter-btn" onclick="toggleFilter('c')">🟨 C 听力</button>
+      <button class="filter-btn" onclick="toggleFilter('d')">🟥 D 阅读</button>
+      <button class="filter-btn" onclick="toggleFilter('e')">🟪 E 口语</button>
+      <button class="filter-btn" onclick="toggleFilter('f')">🟫 F 写作</button>
+      <button class="clear-btn" onclick="clearFilters()">清除</button>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const phases = { summer: ['A','C','B','E'], school: ['B','E','C','A'], autumn: ['A','B','C','D','E','F'] };
+const banks = { A:'语法急救', B:'词汇基建', C:'听力优势转化', D:'阅读技巧', E:'口语输出', F:'写作逻辑' };
+const colors = { A:'a', B:'b', C:'c', D:'d', E:'e', F:'f' };
+const emojis = { A:'📘', B:'📗', C:'🎧', D:'📖', E:'🗣️', F:'✍️' };
+
+const modules = [
+  {
+    id:'A1', bank:'A', title:'新概念L1-5 课文听读+语法点', time:'30min',
+    subjects:'语法/阅读', targets:'基础语法', phases:['summer','autumn'],
+    desc:'先听3遍课文建立语感，再看语法点（现在进行时/一般过去时/一般现在时），最后跟读。',
+    prep: [
+      '下载或打开《新概念英语》第二册（New Concept English Book 2）第1-5课课文',
+      '准备好纸笔用于听写和笔记',
+      '可在B站搜索"新概念英语第二册第1课"听音频（免费资源丰富）'
+    ],
+    steps: [
+      '第1遍：不看课文，纯听。尝试听懂大意（你听力好，这遍应该轻松）。',
+      '第2遍：边听边看课文，用笔划出你不认识的单词。',
+      '第3遍：跟读（Shadowing），播放一句暂停一句，模仿发音和语调。',
+      '看课后语法注释（每课后面都有关键语法点），在纸上抄写3个例句。',
+      '用今天学的语法点自己造2个句子（可以写关于你自己的事情）。'
+    ],
+    why: '新概念2的前5课构建了英语最基本的3个时态（现在/过去/进行），这些是雅思口语Part1和写作Task1的基础。你语法差的核心是时态混乱——这个模块用听力先输入再跟读的方式，让你的耳朵和嘴巴先于眼睛学会时态，比直接看语法书效率高3倍。听力好的你，用"先听后看"的顺序学语法是最佳路径。'
+  },
+  {
+    id:'A2', bank:'A', title:'新概念L6-10 被动语态+比较级', time:'30min',
+    subjects:'语法/写作', targets:'写作Task1', phases:['summer','autumn'],
+    desc:'聚焦被动语态和比较级——雅思写作Task1图表描述的核心语法。',
+    prep: [
+      '《新概念英语》第二册第6-10课课文',
+      'B站搜索对应课文音频',
+      '笔记本用于抄写被动语态和比较级的例句'
+    ],
+    steps: [
+      '先听第6-10课课文各1遍（11分钟以内能完成，你听力好可1.2倍速）。',
+      '重点学习被动语态结构：be + 过去分词（如 is made, was built, can be seen）。',
+      '在新概念课文中找出所有被动语态的句子，用荧光笔高亮。',
+      '学习比较级规则（-er / more / as...as），在课文中找例子。',
+      '做5个中译英练习：把中文图表句翻译成英文（如"2020年，产量增长了20%"译为"Output increased by 20% in 2020"）。'
+    ],
+    why: '雅思写作Task1图表题的核心语法只有两个：被动语态和比较级。例如"The largest proportion can be seen in..."就是被动语态。新概念2的第6-10课集中呈现了这两个语法点。你用5课的时间掌握Task1最核心的语法，而不是学完一整本语法书，效率极高。'
+  },
+  {
+    id:'A3', bank:'A', title:'新概念L11-15 现在完成时+定语从句', time:'30min',
+    subjects:'语法/阅读', targets:'阅读长难句', phases:['summer','autumn'],
+    desc:'定语从句是雅思阅读长难句的第一大障碍，现在完成时是口语Part2的核心时态。',
+    prep: [
+      '《新概念英语》第二册第11-15课课文',
+      'B站搜索对应课文音频',
+      '红色笔（用于标记关系代词 who/which/that/whose/whom）'
+    ],
+    steps: [
+      '听课文2遍（第1遍泛听，第2遍看课文听）。',
+      '重点学习定语从句：找出每一课中使用 who / which / that / whose / whom 的句子。',
+      '在纸上画出定语从句的结构：主句[先行词 + 关系代词 + 从句]主句剩余部分。',
+      '学习现在完成时的结构（have/has + 过去分词）和时间标志词（since, for, already, yet）。',
+      '用现在完成时写3个关于你自己的句子（如 I have studied English for...）。'
+    ],
+    why: '雅思阅读文章每篇都有大量定语从句，看不懂定语从句=读不懂长难句=做不对题目。现在完成时是口语Part2（描述经历）的默认时态。你语法差，专门花30min攻下定语从句，阅读正确率可提升15-20%。'
+  },
+  {
+    id:'A4', bank:'A', title:'新概念L16-20 条件句+间接引语', time:'30min',
+    subjects:'语法/口语/写作', targets:'口语Part3 & 写作Task2', phases:['summer','autumn'],
+    desc:'假设条件句（如果…就…）是Part3讨论和Task2论证的核心句式结构。',
+    prep: [
+      '《新概念英语》第二册第16-20课课文',
+      'B站搜索对应课文音频',
+      '准备5个雅思口语Part3题目（如"你认为未来教育会改变吗？"）'
+    ],
+    steps: [
+      '听课文2遍，标记条件句（if/unless）和间接引语句（said that...）。',
+      '学习三种条件句：第一条件句（真实可能）、第二条件句（假设现在）、第三条件句（假设过去）。',
+      '分别用三种条件句各造2个句子。',
+      '学习间接引语中的时态倒退规则（said → had said, will → would）。',
+      '拿一个Part3题目，尝试用条件句口头回答并录音（如"If the government invested more, education would..."）。'
+    ],
+    why: '雅思口语Part3和写作Task2本质都是"发表观点+讨论可能性"，条件句是最核心的论证句式。你不会条件句，论证就显得幼稚。新概念2的第16-20课用最简单的方式呈现了条件句——学完后你就能说/写出"如果…就会…"这样的复杂逻辑句，口语和写作直接升档。'
+  },
+  {
+    id:'A5', bank:'A', title:'每日一句长难句拆解（雅思阅读真题句）', time:'15min',
+    subjects:'语法/阅读', targets:'阅读7.5+', phases:['summer','school','autumn'],
+    desc:'每天从雅思真题中取1个长难句，找主谓宾、划从句——这是阅读从5.5到7+的最核心训练。',
+    prep: [
+      '每天准备1个雅思阅读长难句（来源：剑桥雅思真题9-18任一套阅读Passage，或关注公众号"经济学人双语精读"获取每日长难句推送）',
+      '准备3种颜色的笔：黑色找主谓宾、蓝色画从句、红色圈生词',
+      '或用电脑/iPad的Notability/GoodNotes做电子标注'
+    ],
+    steps: [
+      '把句子完整抄写在纸上（手写加深记忆）。',
+      '第1步：找出主句的主语和谓语（主谓宾是句子的骨架，其他都是修饰）。',
+      '第2步：用括号标出所有从句（定语从句/状语从句/名词性从句），判断每个从句修饰谁。',
+      '第3步：查出生词，但不要翻译整句——用英语语序理解，不要翻译成中文。',
+      '第4步：通读3遍，第3遍尝试不看成份标注流利朗读（能朗读出来=真正理解了）。'
+    ],
+    why: '雅思阅读考的不是"认识多少单词"，而是"能否快速抓住句子核心信息"。你听力好说明语感不错，但阅读分低的原因是你习惯翻译式阅读（每个词译成中文），而不是结构式阅读（抓主谓宾）。每天1句长难句拆解，坚持60天=你的阅读速度和正确率会产生质变。这是所有A模块中最重要的，建议从暑假到秋假尽量不要断。'
+  },
+  {
+    id:'A6', bank:'A', title:'写作句型中译英（10个句子）', time:'20min',
+    subjects:'语法/写作', targets:'写作6.5+', phases:['summer','school','autumn'],
+    desc:'用新概念学过的语法翻译简单雅思写作句，打通"语法知识→写作实际运用"。',
+    prep: [
+      '准备10个简单中文句（从雅思写作范文或新概念课文翻译而来）',
+      '或直接使用这个模板句库（先练前10个）：',
+      '1.越来越多的人选择出国留学。',
+      '2.政府应该投资更多资金在教育上。',
+      '3.在过去十年中，房价大幅度上涨。',
+      '4.虽然科技带来了便利，但它也造成了一些问题。',
+      '5.如果年轻人不学会理财，他们将面临财务困难。',
+      '6.污染是当今最严重的环境问题之一。',
+      '7.很多人认为幸福比金钱更重要。',
+      '8.政府已经采取了一系列措施来解决这个问题。',
+      '9.随着社会的发展，人们的生活方式发生了巨大变化。',
+      '10.不可否认的是，教育在个人发展中扮演着关键角色。'
+    ],
+    steps: [
+      '一次翻译10个句子（每句限时1分钟，共10分钟）。',
+      '写完后对照标准译法（可用DeepL或Google翻译作为参考），用红笔修改。',
+      '每句错误分类标记：G=语法错误 / V=词汇错误 / S=句型错误 / C=中式英语。',
+      '选最错的2句，重新翻译直到完全正确。',
+      '把纠正后的正确句子大声朗读3遍（用嘴巴建立肌肉记忆）。'
+    ],
+    why: '"知道语法规则"和"能写出正确句子"之间有一条巨大的鸿沟。中译英是填平这条鸿沟最高效的方法。你语法差，如果直接写作文，你会写出大量错误的句子并不断巩固错误。先用中译英建立"正确输出"的习惯，秋假再开始完整作文写作，事半功倍。'
+  },
+
+  {
+    id:'B1', bank:'B', title:'听力场景词听写（租房/旅游/学术）', time:'20min',
+    subjects:'词汇/听力', targets:'听力7+', phases:['summer','school','autumn'],
+    desc:'用雅思王陆听力语料库，只听写第3、5、8章（租房场景、学术场景、旅游场景）——这些是雅思听力的高频题库。',
+    prep: [
+      '获取"雅思王陆807听力词汇"或"语料库"的MP3音频（B站/学习群有共享资源）',
+      '准备好A4纸或练习本用于听写',
+      '重点章节：Chapter 3（租房/住宿）、Chapter 5（学术/教育）、Chapter 8（旅游/交通）'
+    ],
+    steps: [
+      '打开音频，播放一个场景（如租房），听单词，写下来。',
+      '每个单词读2遍，中间有间隔——不要暂停，跟随音频节奏。',
+      '写完后对照书本/PDF核对拼写，红笔改正错误。',
+      '错误单词大声朗读5遍（特别是拼错的重点词）。',
+      '第二天先复习前一天的错词（遮住英文看中文写英文），再听新内容。'
+    ],
+    why: '你听力好但单词差——听力场景词听写把两个问题合二为一解决。听力Section1/2的词汇不难（如deposit, reservation, accommodation），但你必须"听到就能反应出拼写"。传统背单词书是"眼睛→脑子"，但听证词需要"耳朵→手"，这是完全不同的神经通路。用听写法背单词，你听力好的优势会被放大。'
+  },
+  {
+    id:'B2', bank:'B', title:'阅读同义替换对（10组/天）', time:'15min',
+    subjects:'词汇/阅读', targets:'阅读7+', phases:['summer','school','autumn'],
+    desc:'雅思阅读考的就是同义替换！每天记10组高频替换对（如 important = crucial = vital = significant）。',
+    prep: [
+      '准备一个专门的小本子或电子备忘录，命名为"同义替换银行"',
+      '可以从剑桥雅思真题的阅读答案句中自己提取',
+      '或搜索"雅思阅读同义替换1000组"（知乎/小红书上有很多整理好的）',
+      '每天10组，每组2-5个同义词/同义表达'
+    ],
+    steps: [
+      '拿出今天的10组同义替换，先遮住英文看中文推理对应英文。',
+      '每组替换对中，选一个你最喜欢的词，用这个词造一个简单句子。',
+      '特别关注"抽象词替换具体词"的类型，如 people → the general public / individuals / citizens。',
+      '周末把本周50组全部快速过一遍（5分钟，只看英文-中文对应，不造句）。',
+      '在后续做阅读真题时，有意识地寻找这些替换对，在文中圈出来。'
+    ],
+    why: '雅思阅读40道题，至少30道考的是同义替换——题目中的表达不会原样出现在原文中。你单词差，与其背5000个新词，不如先把最高频的500个同义替换掌握牢。这个模块每天只需15分钟，但对阅读提分效果是立竿见影的。建议从暑假一直做到考试前。'
+  },
+  {
+    id:'B3', bank:'B', title:'口语主题词卡积累（人物/地点/事件/物品）', time:'20min',
+    subjects:'词汇/口语', targets:'口语Part2', phases:['summer','school','autumn'],
+    desc:'为Part2的4大主题（人物/地点/事件/物品）各积累8-10个核心表达，建立自己的"故事词库"。',
+    prep: [
+      '打开雅思哥APP或任何雅思口语题库，查看当季Part2话题卡',
+      '准备4张卡片（或4页电子笔记），分别标注：人物/地点/事件/物品',
+      '每个主题准备8-10个你能用上的表达（不是生词，是好用的表达）'
+    ],
+    steps: [
+      '选一个主题（如"人物"），列出你要描述的一个人（如你的朋友/老师/家人）。',
+      '围绕这个人，写下你需要的表达：appearance（外貌）/ personality（性格）/ experience with them（共同经历）。',
+      '每个表达写一个完整的句子（不要孤立背词），如"She has a great sense of humor——she always makes everyone laugh."。',
+      '把这些表达分类：⭐ = 必用（最自然的），🔵 = 加分（稍微高级一点），🔴 = 备用（万一想不起来用）。',
+      '对着镜子用这些表达讲述这个人物1-2分钟，录音回听。'
+    ],
+    why: '口语Part2是"讲故事"，不是"展示词汇量"。很多学生背了一大堆高级词但张口结巴。你听力好，有自然的语感优势——你需要的是"刚好能用上的表达"而不是"看起来厉害但不会用的词"。主题词卡让你在Part2的1分钟准备时间内，大脑里有现成的"词库菜单"可以选。'
+  },
+  {
+    id:'B4', bank:'B', title:'BBC 6 Minute English 精听+笔记', time:'30min',
+    subjects:'词汇/听力', targets:'听力7.5+', phases:['summer','school','autumn'],
+    desc:'你听力好，这是你最享受的模块——6分钟节目，做深度笔记，把听力强的优势变成词汇增长。',
+    prep: [
+      '访问 BBC Learning English - 6 Minute English 官网（免费，国内可访问）或B站搜索"BBC 6 Minute English"搬运',
+      '选择一个你感兴趣的话题（如AI、Climate Change、Social Media）',
+      '打开笔记本，准备做3层笔记'
+    ],
+    steps: [
+      '第1遍：纯听，不暂停——听完后用中文写3句话，总结这期节目的核心内容。',
+      '第2遍：逐句听，听到有用的表达或生词就暂停，记到笔记本上（不超8个）。',
+      '第3遍：这次不暂停，跟着主播一起说出来（Shadowing，你的C1模块训练会让你越来越擅长这个）。',
+      '在笔记中给每个新表达写一个你自己的例句（不要抄节目里的例句）。',
+      '晚上睡前用今天学的3个新表达口头造句3个。'
+    ],
+    why: '你单词差但听力好，意味着你最有效的记词方式是通过"听"而不是"看"。BBC 6 Minute English 每期6分钟，话题覆盖雅思常见主题（健康、科技、环境、教育），词汇难度刚好在雅思6.5-7.5区间。用精听+笔记法，你同时训练了听力细节抓取、词汇积累和口语跟读——一个模块打三个技能。'
+  },
+  {
+    id:'B5', bank:'B', title:'真题词汇自测（阅读一篇·不做题·只划词）', time:'20min',
+    subjects:'词汇/阅读', targets:'阅读词汇量', phases:['summer','autumn'],
+    desc:'拿一篇剑桥雅思阅读，不做题，只划生词并分类——建立你自己的"真题生词库"。',
+    prep: [
+      '准备一篇剑桥雅思真题阅读（剑9-18任选一篇，推荐从Passage1开始）',
+      '3种颜色的荧光笔或记号笔：🟢绿色=认识（能反应出意思）/ 🟡黄色=模糊（好像见过但不确定）/ 🔴红色=陌生（完全没见过）',
+      '准备一个生词本或Excel表格'
+    ],
+    steps: [
+      '快速浏览文章，用3种颜色标记所有生词（不要查词典，先凭第一反应标记）。',
+      '标记完后统计数量：绿色多少个？黄色多少个？红色多少个？（记录日期和数字，追踪进步）。',
+      '只查黄色和红色的词（绿色跳过），每个词查英英词典（推荐用Oxford Learner\'s Dictionary在线版）看英文释义。',
+      '每个黄/红词只记1个在本文中的意思——不要记全部释义。',
+      '把今天的黄/红词整理到Excel中，格式：英文-中文-出处在哪篇文章哪一段。'
+    ],
+    why: '传统背单词方法最大的问题是"背的永远用不上，考的永远没背过"。你直接从真题中提取生词，保证每个词都是"考试真的会考到的"。用3色标记法让你先了解自己的词汇基础（绿色占比越高=词汇进步越快），同时避免在已认识的词上浪费时间。每篇阅读你最终只需要记10-20个词，但每个都是高频考点词。'
+  },
+
+  {
+    id:'C1', bank:'C', title:'Shadowing跟读（剑桥真题S2/S3）', time:'20min',
+    subjects:'听力/口语/语音', targets:'听力+口语双提升', phases:['summer','school','autumn'],
+    desc:'你提分最快的核武器模块！播放一句暂停一句，模仿语气语速跟读——打通听力细节→口语流利度。',
+    prep: [
+      '打开剑桥雅思真题听力Section 2或Section 3（S2是独白，S3是对话，更适合跟读）',
+      '准备好音频文件和对应的transcript（听力原文）',
+      '一副耳机（建议用有线耳机，延迟更低，方便跟读）'
+    ],
+    steps: [
+      '第1-5分钟：听原速完整播放一遍段落（不做任何事，纯听）。',
+      '第6-15分钟：逐句Shadowing——播放1句（约5-15个词），立即暂停，你大声模仿跟读。重点模仿3点：①语调（上升/下降）②重音（哪些词读得重）③断句（在哪里换气）。',
+      '第16-20分钟：完整段落再跟读1遍，这次不暂停，尝试与音频"同步出声"（像合唱一样）。',
+      '录音。回听自己的录音，对比原音频，标出差异最大的2处——下次重点改进。',
+      '进阶：逐渐减少暂停次数，最终目标是40秒段落一口气跟完。'
+    ],
+    why: '这是你的王牌模块！你听力好，说明你的大脑已经建立了英语声音的神经网络——但你的嘴巴还没跟上。Shadowing就是用你最强的输入能力（听力），强制驱动输出能力（口语发音/流利度）。每天20分钟Shadowing，坚持30天后：①口语流利度显著提升（不需要想语法，嘴巴自动说）②听力填空题正确率提高（因为你开始听到以前忽略的细节音）③语音语调变自然（不像中国学生那样平平地读）。建议每周至少做3次，秋假每天做。'
+  },
+  {
+    id:'C2', bank:'C', title:'精听填空（剑桥真题S1或S4）', time:'30min',
+    subjects:'听力', targets:'听力填空题', phases:['summer','autumn'],
+    desc:'精听3遍：做题→逐句听写→核对。专门攻克雅思听力Section1和Section4的填空题。',
+    prep: [
+      '剑桥雅思真题听力Section 1或Section 4各选一套（S1简单题，S4学术讲座题）',
+      '准备好音频和题目',
+      '准备纸和笔（Section 1先练手写速度，很多考生S1丢分是因为拼写速度不够快）'
+    ],
+    steps: [
+      '第1遍（8-10min）：正常做题，只听一遍，写下答案。不要暂停，模拟考试。',
+      '第2遍（15min）：逐句播放，每句暂停，把你听到的句子完整写下来（听写）。听不出来的地方留空格。',
+      '第3遍（5min）：打开transcript对照，红笔填空——看哪些词你没听出来。',
+      '分析错因：①拼写错误（会听但写不对）②漏听（根本没听到这个词）③混淆（听成另一个词）。',
+      '错词抄5遍+朗读5遍，每类错因统计数量。'
+    ],
+    why: '你听力好能听懂大意，但雅思听力考的是细节！Section 1的电话号码/日期/人名，Section 4的学术术语——这些是你"能听懂大概但做不对题"的失分点。精听填空强迫你关注每一个音节，是你从"听力好"到"听力拿高分"的必经之路。暑假每周至少1次精听，秋假每周2-3次。'
+  },
+  {
+    id:'C3', bank:'C', title:'听力真题限时一套（只做题+对答案）', time:'30min',
+    subjects:'听力', targets:'听力题感', phases:['autumn'],
+    desc:'完整做一套剑桥真题听力（4个Section），限时30分钟——纯练题感和节奏，不需要精听。',
+    prep: [
+      '剑桥雅思真题一套完整听力（S1+S2+S3+S4）',
+      '答案卡/纸（模拟考试：Section 1做完直接写答案，不要誊抄环节）',
+      '计时器设30分钟'
+    ],
+    steps: [
+      '严格限时30分钟，中途不暂停、不重放、不查词。',
+      'Section 1开始前有读题时间（考试有30秒），利用这个时间预读Section 1题目。',
+      '每做完一个Section，利用下一个Section的读题时间预读下一个Section的题。',
+      '全部做完后对答案，统计分数（40题对应9分制）。',
+      '只分析错题：在transcript中找到出题句，看自己是漏听/拼错/还是理解错。不精听全文。'
+    ],
+    why: '你听力能听懂，但考试有时间压力+只放一遍——如果不训练"一遍抓重点"的题感，你可能会在考试中因为一个小失误连丢3题。这个模块练的不是听力能力，而是考试技巧和节奏感。建议秋假每2天做1套，总共做8-10套即可。'
+  },
+  {
+    id:'C4', bank:'C', title:'英语播客笔记（TED Talks Daily / All Ears English）', time:'20min',
+    subjects:'听力/口语/词汇', targets:'泛听+抓主旨', phases:['summer','school','autumn'],
+    desc:'你听力好，这是你的"娱乐模块"——听一段喜欢的播客，用中文写3句话总结主旨。',
+    prep: [
+      '下载播客APP（Apple Podcasts / 小宇宙 / Spotify）',
+      '订阅：TED Talks Daily（偏学术，适合雅思学术语境）或 All Ears English（雅思专项）',
+      '或直接在B站/YouTube搜TED演讲（选8-12分钟的）'
+    ],
+    steps: [
+      '选一个你今天感兴趣的话题（兴趣驱动！不要选"觉得应该听"的）。',
+      '听的过程中不暂停、不做笔记——就像听中文播客一样放松。',
+      '听完后用中文写3句话总结：①主题是什么②演讲者的观点是什么③你同意/不同意吗，为什么。',
+      '（可选进阶）回想2-3个你听到的有趣表达，查一下怎么说。',
+      '这3句话中文总结后面，写1句英文总结（强迫自己用英语提炼）。'
+    ],
+    why: '传统听力训练太"苦"——精听、做题、纠错。但你听力好，你需要的不是苦练，而是保持输入量和拓展话题广度。播客笔记让你在轻松的状态下持续输入英语，同时训练"抓主旨"能力（这正是雅思听力Section 3/4的核心考点）。每天20分钟，像刷短视频一样刷播客。'
+  },
+  {
+    id:'C5', bank:'C', title:'看电影片段+Shadowing（选你喜欢的剧）', time:'25min',
+    subjects:'口语/听力/语音', targets:'语音语调自然度', phases:['summer','school'],
+    desc:'纯快乐模块——选一个你喜欢的英美剧片段（3-5分钟），反复跟读模仿。',
+    prep: [
+      '选一部你喜欢的英美剧（推荐：Friends老友记 / Modern Family摩登家庭 / The Crown王冠）',
+      '截取一个3-5分钟的对话片段（两人对话最佳）',
+      '找到这个片段的英文字幕（网上很好找）'
+    ],
+    steps: [
+      '第1遍：看片段，享受剧情（不要有任何学习压力）。',
+      '第2遍：打开英文字幕，跟着读（跟不上的地方暂停）。',
+      '第3遍：看中文字幕，脑中快速回忆英语怎么说（翻译式练习）。',
+      '第4遍：不看任何字幕，和角色同步开口（最难但也最有效）。',
+      '选3句你最想"偷"来用的台词，写到你的口语笔记本里——下次聊天时用出去。'
+    ],
+    why: '这是你的"休息日模块"。研究表明，情感投入的学习记忆效果是非情感投入的3倍。你喜欢一部剧，那些台词会在你脑子里自动循环——这是最好的口语学习。而且影视对话的语速和连读比雅思听力更真实，练多了你会发现雅思听力变"慢"了。暑假每周1-2次即可，不要有压力。'
+  },
+
+  {
+    id:'D1', bank:'D', title:'题型微技能：判断题（TFNG专项）', time:'30min',
+    subjects:'阅读', targets:'判断题100%正确', phases:['summer','autumn'],
+    desc:'只做判断题（TRUE/FALSE/NOT GIVEN）——总结FALSE和NOT GIVEN的区别，这是中国考生最易错的题型。',
+    prep: [
+      '从剑桥雅思真题中找5-8套阅读的判断题（可以单独做判断题，不需要做整篇）',
+      '准备一张纸画3列：TRUE VS FALSE VS NOT GIVEN',
+      '理解三者的核心区别：TRUE=原文明确说了✅ / FALSE=原文说了相反❌ / NOT GIVEN=原文没提到🤷'
+    ],
+    steps: [
+      '做10道判断题（限时12分钟），不要查词典。',
+      '对答案，把做错的题分类：错把FALSE判成NOT GIVEN？还是错把NOT GIVEN判成FALSE？',
+      '在3列表格中总结规律——FALSE的特征：原文出现反义词/否定词/矛盾信息；NOT GIVEN的特征：原文提到了相关词但不是题目的比较关系/因果关系。',
+      '给每道错题写一句话解释："这道题是FALSE因为原文说X，题目说Y，X和Y矛盾。"',
+      '再做10道新判断题验证你的规律是否有效（正确率应有所提升）。'
+    ],
+    why: '雅思阅读判断题是中国学生正确率最低的题型（通常不到50%）。核心原因是分不清FALSE和NOT GIVEN。你听力好意味着你能理解句子之间的逻辑关系——把这种能力迁移到阅读判断题上，你比一般学生更快掌握这个题型的规律。一旦判断题正确率从50%提升到85%，阅读总分直接多拿0.5-1分。'
+  },
+  {
+    id:'D2', bank:'D', title:'题型微技能：Heading题', time:'30min',
+    subjects:'阅读', targets:'List of Headings', phases:['summer','autumn'],
+    desc:'List of Headings（段落选标题）的解题核心——只看段落首尾句+转折句，训练抓主旨。',
+    prep: [
+      '从剑桥雅思真题中找带有List of Headings题型的阅读文章（平均每2-3套就有1篇）',
+      '准备荧光笔（黄色标首句/尾句，粉色标转折词 but/however/although）',
+      '计时器'
+    ],
+    steps: [
+      '先看Heading列表（10-12个选项），读一遍了解有哪些标题关键词。',
+      '读文章段落——只读每段的首句（60-70%的段落主旨在首句）、尾句、和含有but/however/although的句子。',
+      '读完一段后立即回看Heading选项，排除明显不相关的（通常能排除一半）。',
+      '在剩余的选项中选最匹配的——注意：不是"段落提到了什么"，而是"段落主要在讲什么"。',
+      '做完后对答案，对于做错的Heading，重新精读那段验证你的首尾句策略是否遗漏了关键信息。'
+    ],
+    why: 'Heading题是中国考生的第二大噩梦（仅次于判断题）。很多学生逐句读完全段才选标题，耗时巨大且正确率不高。实际上，英文学术段落的写作规律是"首句给主旨，末句可总结，转折词后出重点"——掌握这个规律，你可以在不逐句读的情况下，30秒内选出正确Heading，正确率达到80%+。'
+  },
+  {
+    id:'D3', bank:'D', title:'题型微技能：Matching/填空题', time:'30min',
+    subjects:'阅读', targets:'匹配题/填空题', phases:['summer','autumn'],
+    desc:'练习段落信息匹配和Summary填空——用平行阅读法（parallel reading），同时处理多个题型。',
+    prep: [
+      '找一篇同时包含Matching信息和填空题的剑桥真题阅读',
+      '理解平行阅读法的核心：以题目的关键词为搜索目标，在原文中"钓鱼"，而不是通读文章再做题',
+      '计时器设15分钟（只做这一大题）'
+    ],
+    steps: [
+      '先看所有题目（Matching+填空），划出每道题的关键定位词（人名/地名/数字/专有名词/独特实词）。',
+      '然后开始读文章——脑海中带着5-8个关键词在读，像雷达扫描一样，读到某个关键词相关的内容就停下来做题。',
+      '每做完一道就划掉一道，减少认知负担。',
+      '填空题特别注意：原文用词的词性和单复数必须匹配题目空格（答案词和原文可能不是原词！）。',
+      '给每种Matching类型总结1条规律，写到"阅读技巧本"里（如"人名匹配题，找首次出现名字的位置+之后3句话"）。'
+    ],
+    why: '雅思阅读60分钟做40道题，不可能通读全文。平行阅读法是你从"看懂文章再做题"到"带着题目找答案"的核心技巧转变。你听力好意味着你在听的时候已经用了"关键词抓取"策略——把这个策略迁移到阅读上，你掌握平行阅读法的速度会比大多数人快。'
+  },
+  {
+    id:'D4', bank:'D', title:'一篇阅读限时（15min/篇）+ 错题分析', time:'30min',
+    subjects:'阅读', targets:'阅读速度+正确率', phases:['autumn'],
+    desc:'完整做一篇剑桥真题阅读，限时15分钟，然后花15分钟分析每道错题的原因。',
+    prep: [
+      '剑桥雅思真题阅读一篇（Passage 1/2/3任选，Passage 1最简单）',
+      '计时器设15分钟',
+      '错题分析本（纸张/电子均可）'
+    ],
+    steps: [
+      '15分钟限时做一篇阅读（目标：Passage1在12分钟内完成，Passage2在15分钟内，Passage3在18分钟内）。',
+      '15分钟错题分析——每道错题问自己3个问题：',
+      '①我为什么选了这个错误答案？（被哪个词误导了？）',
+      '②正确答案在原文哪句话？（把那句话高亮出来）',
+      '③这道题考的是同义替换/逻辑关系/还是细节定位？',
+      '把错因分类记录：T=时间不够 / V=词汇不认识 / L=定位错 / U=理解错 / C=粗心。',
+      '统计各类型数据，看自己的主要弱点是什么，然后针对性选对应模块补。'
+    ],
+    why: '不做错题分析的刷题=浪费真题。你每做错一题，都是你的大脑在告诉你"我这里有盲区"。找到盲区并点亮它，10篇精做>>50篇泛做。这个模块建议秋假集中进行，考前做12-15篇精做+分析即可。'
+  },
+  {
+    id:'D5', bank:'D', title:'长难句+段落结构分析（不做题）', time:'20min',
+    subjects:'阅读', targets:'阅读深度理解', phases:['autumn'],
+    desc:'拿一篇阅读，只分析每段的内部结构和1个最复杂的长难句——训练你的文章逻辑感知力。',
+    prep: [
+      '剑桥雅思真题阅读一篇（建议选Passage 2或Passage 3，长难句更多）',
+      '几张A4纸用于画段落结构图',
+      '不拿题目——这个模块的目的不是做题'
+    ],
+    steps: [
+      '逐段分析：每段读完后在纸上画结构——首句是什么功能（引出话题/给定义/提观点）？中间句是什么（举例/解释/对比）？末句是什么（总结/转折/引出下文）？',
+      '从每段选1个最复杂的长难句（最长最难的那句），像A5模块一样拆解主谓宾+从句标记。',
+      '画出整篇文章的逻辑框架图：主题是什么→每段的核心功能→各段之间的逻辑关系（并列/递进/对比/因果）。',
+      '最后用中文写一篇5句话的文章摘要。',
+      '回看：这篇文章讲的是什么话题？你对这个话题了解吗？如果不了解，课外去搜索了解这个话题的中文背景知识。'
+    ],
+    why: '很多学生做阅读只能看到"词"和"句"，看不到"段"和"篇"。你听力好说明你能理解一段话的上下文逻辑——这个能力是阅读7.5+的隐藏条件。段落结构分析专门训练"阅读中的宏观视角"，让你不再迷失在长文章的单词海洋里。同时，很多时候你读不懂文章不是英语问题，是背景知识不足——补充背景知识=降低阅读难度。'
+  },
+
+  {
+    id:'E1', bank:'E', title:'Part 1 每日3题录音', time:'15min',
+    subjects:'口语', targets:'口语Part1流利度', phases:['summer','school','autumn'],
+    desc:'打开雅思哥APP随机选3个Part1话题，每题说30秒然后录音回听——这是最简单的口语启动器。',
+    prep: [
+      '下载雅思哥APP（免费）或访问IELTS Online Tests网站查看当季题库',
+      '打开手机的录音功能',
+      '准备一个镜子（对着镜子说，能看到自己的表情和肢体语言）'
+    ],
+    steps: [
+      '随机选3个Part1话题（如：Hometown, Work or Study, Hobbies）。',
+      '每道题说30-40秒，不要提前准备——张口就说，模拟真实考试。',
+      '全程录音。',
+      '回听录音，检查3点：①有没有超过3秒的停顿（卡壳）②语法错误（时态、单复数、he/she混用）③发音是否清晰。',
+      '如果某题说得太差，重说一遍——这次可以有10秒准备时间。'
+    ],
+    why: '口语Part1是雅思口语的"热身区"，题目简单（关于你自己），但考察的是你的反应速度和自然度。你听力好，Part1的题目你肯定能听懂——你需要练习的是"听到问题→快速组织回答"。每天3题，坚持21天，你的口语Part1会从"需要想半天"变成"张口就来"。这是口语模块中门槛最低、收益最稳定的。'
+  },
+  {
+    id:'E2', bank:'E', title:'Part 2 故事银行建设（1个话题卡+万能故事）', time:'30min',
+    subjects:'口语', targets:'口语Part2', phases:['summer','autumn'],
+    desc:'准备"万能故事"——同一个故事可以通过微调套用到多个Part2话题，1个故事=5个题目的答案。',
+    prep: [
+      '打开当季雅思Part2题库（50+个话题卡）',
+      '准备一个"故事银行本"或电子笔记',
+      '找出5个可以被同一个故事覆盖的话题（如"帮助别人""难忘的经历""学到了什么""一次旅行""一个困难决定"）'
+    ],
+    steps: [
+      '选1个你觉得最好讲的故事（真实经历最佳——记住，Part2不考真实性，考语言能力），写下来。',
+      '优化这个故事的第一步：拆成4个部分，对应Part2答题卡上的4个提示问题（who/what/when/where/why/explain）。',
+      '使用"过去时+现在完成时+条件句"三种时态讲述（展示语法能力）。',
+      '加入1个感官细节（如"The smell of fresh coffee filled the room"）——让故事生动。',
+      '对着镜子/录音讲2分钟（不许看笔记！），讲完后看是否卡在某个部分——多练那个部分的表述。',
+      '把这个故事"改装"成另一个话题的答案（如"帮助别人"改成"一次合作经历"——80%内容复用，只改开头)。'
+    ],
+    why: '口语Part2有50+个话题，但你不需要准备50个故事。5-6个"万能故事"加上灵活改装能力，就可以覆盖几乎所有题目。你听力好→语感好→你能自然地在一个故事中添加/删除细节而不显得生硬。暑假先建5个故事，秋假扩展到10-12个，考前达到"给任何一个话题卡，30秒内调出一个适配故事"的状态。'
+  },
+  {
+    id:'E3', bank:'E', title:'Part 3 逻辑框架训练（1个话题·四步法）', time:'20min',
+    subjects:'口语', targets:'口语Part3', phases:['autumn'],
+    desc:'用"观点→原因→例子→对比"四步法训练Part3的回答逻辑——把听力理解力转化为口语论证力。',
+    prep: [
+      '准备3-5个雅思Part3话题（如：Do you think technology makes life better?）',
+      '录音设备',
+      '计时器'
+    ],
+    steps: [
+      '选1个Part3话题，用以下"四步法"框架准备回答：',
+      '① Viewpoint（观点）：直接回答"Yes, I believe that..." 或 "It depends on..."。',
+      '② Reason（原因）：用"because / since / the main reason is that..."连接。',
+      '③ Example（例子）：用"For instance / Take...as an example"引入1个具体例子。',
+      '④ Contrast（对比/让步）：用"However, on the other hand..."展示多角度思考。',
+      '准备完后录音回答（40-60秒），回听检查是否覆盖了4个步骤。',
+      '进阶：不看框架提示，直接回答——能脱口而出四步结构才算真正掌握。'
+    ],
+    why: 'Part3是雅思口语的拉分部分（决定6.5还是7.5）。你听力好意味着你能理解Part3的抽象问题——但很多学生能听懂却回答得支离破碎。四步法给了你一个"思维脚手架"，确保你的回答有逻辑深度。这本质上是用你的听力理解优势+一个简单的逻辑框架，把Part3从"随机发挥"变成"套路输出"。'
+  },
+  {
+    id:'E4', bank:'E', title:'跟读模仿·语音语调（BBC/雅思听力原文）', time:'20min',
+    subjects:'口语/语音', targets:'发音清晰度', phases:['summer','school'],
+    desc:'和C1不同，E4重在语音语调模仿——让你说话不再"平"，有自然的英文节奏感。',
+    prep: [
+      '选一段英文音频：雅思听力Section 2（独白，最适合练语调）或BBC新闻',
+      '获取transcript（听力原文）',
+      '录音设备'
+    ],
+    steps: [
+      '听原文1遍，感受speaker的语调起伏。',
+      '在transcript上用箭头标出语调变化：↗上升（问句/未结束）/ ↘下降（陈述句/结束）/ → 平调（列举中）。',
+      '逐句模仿朗读——不是跟读（Shadowing），而是听完一整句后暂停，自己凭记忆还原语调。',
+      '特别关注"中国人最容易平调"的地方：句末是↗还是↘？哪些词被重读了？哪些词被弱读了（如 and 会弱读成 n）？',
+      '录自己的版本→和原音频对比→再改进→再录。每个句子做到3次迭代。'
+    ],
+    why: '中国学生在雅思口语中最吃亏的不是词汇或语法，而是"平调"——所有音节一视同仁，没有强弱和起伏。你听力好，你能听到native speaker的语调变化——你需要的是有意识地把它"复制"到自己嘴上。这个模块和C1互补：C1练流利度，E4练语音自然度。暑假每周1次即可，效果会在2-3周后显现。'
+  },
+  {
+    id:'E5', bank:'E', title:'自言自语：描述今天（睡前10分钟）', time:'10min',
+    subjects:'口语', targets:'口语自然度', phases:['summer','school','autumn'],
+    desc:'睡前用英语描述今天的经历和感受——最自然的输出训练，零准备成本。',
+    prep: [
+      '不需要任何准备材料',
+      '只需要一个安静的空间（睡前在床上/洗澡时/散步时均可）',
+      '可选：手机录音（听听自己自发状态下说得怎么样）'
+    ],
+    steps: [
+      '用过去时描述你今天发生的3件事（流水账也行，如"I woke up, had breakfast, then went to..."）。',
+      '说你的1个感受或想法（如"I felt really tired today because..."或"I was thinking about..."）。',
+      '说1个明天的小计划（用将来时，如"Tomorrow I will/am going to..."）。',
+      '如果卡住不知道某个词怎么说——用你会的最简单的词描述它（这是paraphrase能力，雅思口语里的重要评分维度）。',
+      '整个过程5-10分钟，不需要完美，不需要流畅，只需要"说"。'
+    ],
+    why: '口语的核心障碍不是"不会说"，而是"不敢说"和"不习惯说"。你听力好，你的大脑里有大量英语声音素材——但你没有给嘴巴机会把它们"输出"出来。睡前自言自语是零压力的输出启动器，没有观众、没有评价、没有纠错。10分钟的"口头日记"让你在完全放松的状态下激活英语输出神经。暑假和开学期间每天都建议做这个模块。'
+  },
+
+  {
+    id:'F1', bank:'F', title:'Task 1 图表句型翻译（10个核心句型）', time:'20min',
+    subjects:'写作', targets:'写作Task1', phases:['summer','school','autumn'],
+    desc:'中译英练习Task1的10个核心句式——上升/下降/波动/占比/对比各2个句型，练到条件反射。',
+    prep: [
+      '准备10个Task1核心句型中文版本（如下）',
+      '上升类①②、下降类③④、波动类⑤⑥、占比类⑦⑧、对比类⑨⑩',
+      '①从2000年到2020年，人口从500万增长到800万。',
+      '②数量急剧上升，达到了历史最高点。',
+      '③这一数字在2010年后稳步下降。',
+      '④销售额下降了约30%。',
+      '⑤数字有所波动，但总体呈上升趋势。',
+      '⑥这一比例在5%到10%之间波动。',
+      '⑦教育支出占了总预算的最大比例。',
+      '⑧年轻人占了总人口的近一半。',
+      '⑨相比之下，女性的就业率更高。',
+      '⑩A的数量是B的三倍。',
+      '准备纸笔或打字软件（建议手写，更接近考试形式）'
+    ],
+    steps: [
+      '每次翻译10个句子（看到中文→写出英文），每句限时1.5分钟。',
+      '写完后对照参考答案（可用AI或Google翻译+自己检查语法），用红笔修改。',
+      '统计正确率：句子结构正确率（是否用了正确的图表句型）vs 语法正确率（时态/单复数/介词）。',
+      '将写错的句子中的关键句型提炼出来，写到"句型模板库"中：如"数字+increased+from+X+to+Y+between+年份+and+年份"。',
+      '第二天做新的10句之前，先花3分钟复习昨天的句型模板（只看模板不看完整句子）。'
+    ],
+    why: 'Task1本质上是"句型套用"，不是"创意写作"。你需要掌握的句型不超过15个——但你必须在15分钟内准确无误地写出。中译英练习用中文逼迫你输出英文，模拟了考场上的真实过程（脑中想中文→译成英文）。暑假以F1训练为主，把10个核心句型练成肌肉记忆，秋假写Task1就像填模板一样快。'
+  },
+  {
+    id:'F2', bank:'F', title:'Task 1 小作文限时写作（20分钟写+5分钟检查）', time:'25min',
+    subjects:'写作', targets:'写作Task1 6.5+', phases:['autumn'],
+    desc:'完整写一篇Task 1小作文，20分钟限时写作，最后5分钟只检查两项：时态和单复数。',
+    prep: [
+      '剑桥雅思真题Task1题目一个（图表题：线图/柱状图/饼图/表格/流程图/地图）',
+      '计时器设20分钟',
+      '一张答题纸（模拟考试形式，手写）'
+    ],
+    steps: [
+      '20分钟严格限时写作——看到图表→分析数据特征（3分钟）→确定分段结构（2分钟）→写开头段（3分钟）→写主体段1（5分钟）→写主体段2（5分钟）→结尾段可选（2分钟）。',
+      '写作时不要查词典、不要查句型——模拟考场。',
+      '最后5分钟只检查两项：①时态（过去的数据用过去时，描述图表本身用现在时）②单复数（data是复数！percentage是可数单数！）。',
+      '写完后可用Grammarly（免费版）或ChatGPT检查语法错误，但不要用它修改你的内容——只看语法错误类型。',
+      '给每篇Task1评一个自评分（对比剑桥官方范文的band descriptor），记录分数和日期。'
+    ],
+    why: 'Task1的价值是"稳拿6.5分不丢分"。你不需要在Task1上炫技——只需要在20分钟内稳定输出一篇"结构正确+语法基本无误+句型有变化"的150字文章。F2模块是F1的实战应用版。秋假开始做，目标是练10篇，每篇都能在20分钟内完成。'
+  },
+  {
+    id:'F3', bank:'F', title:'Task 2 论点生成训练（1个题目·3个论点·不写作文）', time:'15min',
+    subjects:'写作/思维', targets:'写作Task2思路', phases:['summer','school','autumn'],
+    desc:'只列提纲不写作文——给1道Task2题目，15分钟内想出3个论点+每个论点的1个例子。',
+    prep: [
+      '雅思Task2真题题目（可以从雅思哥或各类雅思资料中获取）',
+      '一张纸或一个思维导图APP',
+      '计时器设15分钟'
+    ],
+    steps: [
+      '读题，确定题型（观点类/讨论类/问题解决类/利弊分析类）。',
+      '5分钟内写下至少3个论点（每个论点一句话，如"Firstly, technology has improved access to education by allowing remote learning."）。',
+      '每个论点下面写1个具体例子（真实或编造均可，如"For instance, during COVID-19, millions of students in China attended classes online."）。',
+      '检查每个论点是否：①与题目直接相关②不重复③有逻辑（不是情感发泄）。',
+      '进阶：尝试就同一个题目写出相反立场的3个论点（训练批判性思维——Part3和Task2都考这个）。'
+    ],
+    why: '大多数学生的Task2问题不是"英语不好"，而是"没东西可写"。一道题目下来脑子空白——这不是语言问题，是思维方式问题。论点生成训练让你在完全不写作文的情况下专门训练"想"的能力。当你积累了50+道题目的论点，你会发现雅思Task2的题目翻来覆去就是15个核心话题（教育/科技/环境/健康/社会/文化...），遇到新题你也能从已有论点库中调取组合。'
+  },
+  {
+    id:'F4', bank:'F', title:'Task 2 开头段+结尾段写作（中间段先不写）', time:'20min',
+    subjects:'写作', targets:'写作Task2结构', phases:['autumn'],
+    desc:'只练Task2的开头（paraphrase题目+给出立场）和结尾（总结观点+升华一句），不练中间段。',
+    prep: [
+      '从F3练习过的题目中选3道',
+      '或从剑桥雅思真题中选Task2题目',
+      '计时器设20分钟（3道题目的开头段+结尾段）'
+    ],
+    steps: [
+      '看题目→不查词典，用你自己的话改写题目（paraphrase），写在开头段——不要抄题目原文！',
+      '改写后明确给出你的立场：I agree / I disagree / In my opinion... / This essay will discuss...',
+      '结尾段模板式处理：In conclusion, [复述你的立场]. This is because [概括1个最有力的理由]. [可选1句展望或建议]。',
+      '每道题控制在6-7分钟内完成开头+结尾（共约80-100词）。',
+      '三题都写完后，回看检查：开头的paraphrase是否和题目原文有足够的词汇变化？立场是否清晰？'
+    ],
+    why: 'Task2的开头和结尾加起来占全文的30%——而且套路固定。先练好开头结尾，你就解决了30%的Task2写作。而且，开头决定考官的第一印象（第一印象差→直接5.5没商量），结尾决定最后的印象。中间段是展示论证能力的，开头结尾是展示语言基本功的——你目前语法差，中间段后面再攻，先把"开场白"和"谢幕词"练熟。'
+  },
+  {
+    id:'F5', bank:'F', title:'范文结构拆解（只看结构不背词句）', time:'20min',
+    subjects:'写作/阅读', targets:'写作结构意识', phases:['summer','school','autumn'],
+    desc:'拿一篇剑桥官方Band 7+范文或Simon考官范文——只看结构，不背词句。提炼"文章的骨架"。',
+    prep: [
+      '获取剑桥雅思官方范文（剑雅书后有部分范文）或Simon考官范文（ielts-simon.com, 免费）',
+      '3支不同颜色的笔：蓝=段落主题句 / 红=过渡连接词 / 绿=例子引入',
+      '建议从Simon的Task2范文开始（他的风格简洁、结构清晰，最适合初学者模仿）'
+    ],
+    steps: [
+      '读一篇范文的标题，先不看内容，自己脑中快速想：如果是我，我会怎么分段？',
+      '然后看范文——只关注结构，不要管用了什么好词好句。',
+      '用蓝色笔标出每段的主题句（topic sentence，通常是每段第一句）。',
+      '用红色笔圈出所有过渡连接词（However, Furthermore, For instance, In addition...）。',
+      '用绿色笔标出举例的句子。',
+      '最后在纸上画出这篇文章的结构图：开头段（改写+立场）→主体段1（论点1+解释+例子）→主体段2（论点2+解释+例子）→结尾段。',
+      '数一数：这篇范文用了几个连接词？几个从句？几个例子？——建立一个"范文配方"认知。'
+    ],
+    why: '你语法差，看范文试图背词句是低效的（背了也用不出来）。但你可以学到最值钱的东西——"高分作文长什么样"的结构认知。就像学画画先看大师作品学构图，写作先看范文学结构。当你能在20分钟内拆解3篇范文结构，你会开始形成"好的写作=好的结构"的潜意识，这比背100个高级词汇重要得多。'
+  }
+];
+
+let activeFilters = [];
+let activePhase = 'all';
+
+function switchPhase(p) {
+  activePhase = p;
+  document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.phase-tab:nth-child(${p==='summer'?1:p==='school'?2:3})`).classList.add('active');
+  document.querySelectorAll('.phase-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('phase-'+p).classList.add('active');
+  render();
+}
+
+function toggleFilter(bank) {
+  const idx = activeFilters.indexOf(bank);
+  if (idx > -1) activeFilters.splice(idx,1);
+  else activeFilters.push(bank);
+  updateFilterBtns();
+  render();
+}
+
+function filterAll() {
+  activeFilters = [];
+  updateFilterBtns();
+  render();
+}
+
+function clearFilters() {
+  activeFilters = [];
+  document.getElementById('search').value = '';
+  updateFilterBtns();
+  render();
+}
+
+function updateFilterBtns() {
+  const btns = document.querySelectorAll('.filter-btn');
+  const allBtn = document.getElementById('allBtn');
+  if (activeFilters.length === 0) {
+    allBtn.classList.remove('inactive');
+    btns.forEach(b => b.className = 'filter-btn');
+  } else {
+    allBtn.classList.add('inactive');
+    btns.forEach(b => {
+      const bank = b.textContent.trim().split(' ')[1];
+      b.className = 'filter-btn ' + (activeFilters.includes(bank) ? bank.toLowerCase()+'-active' : '');
+    });
+  }
+}
+
+function openModal(m) {
+  const overlay = document.getElementById('overlay');
+  const modal = document.getElementById('modal');
+  const c = colors[m.bank];
+  let html = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-code" style="color:var(--${c})">${emojis[m.bank]} ${m.id}</div>
+    <div class="modal-title">${m.title}</div>
+    <div class="modal-meta">
+      <span>⏱️ ${m.time}</span><span>🎯 ${m.subjects}</span><span>📈 目标：${m.targets}</span>
+    </div>
+    <div class="phase-bar">
+      推荐阶段：${m.phases.includes('summer')?'<span class="phase-dot s">☀️ 暑假</span>':''}
+      ${m.phases.includes('school')?'<span class="phase-dot t">📚 开学</span>':''}
+      ${m.phases.includes('autumn')?'<span class="phase-dot f">🍂 秋假</span>':''}
+    </div>
+    <div class="modal-section">
+      <h3><span class="ico">📋</span>前置准备</h3>
+      <ul>${m.prep.map(p => '<li>'+p+'</li>').join('')}</ul>
+    </div>
+    <div class="modal-section">
+      <h3><span class="ico">🔧</span>操作步骤</h3>
+      <ol>${m.steps.map(s => '<li>'+s+'</li>').join('')}</ol>
+    </div>
+    <div class="modal-section">
+      <h3><span class="ico">💡</span>为什么要这么练？</h3>
+      <div class="why-box">${m.why}</div>
+    </div>
+  `;
+  modal.innerHTML = html;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function render() {
+  const query = document.getElementById('search').value.toLowerCase().trim();
+  let filtered = modules;
+
+  if (activeFilters.length > 0) {
+    filtered = filtered.filter(m => activeFilters.includes(m.bank));
+  }
+
+  if (query) {
+    filtered = filtered.filter(m => {
+      return m.id.toLowerCase().includes(query) ||
+        m.title.toLowerCase().includes(query) ||
+        m.subjects.toLowerCase().includes(query) ||
+        m.targets.toLowerCase().includes(query) ||
+        m.desc.toLowerCase().includes(query) ||
+        m.steps.some(s => s.toLowerCase().includes(query)) ||
+        m.why.toLowerCase().includes(query);
+    });
+  }
+
+  document.getElementById('stats').textContent = `共 ${filtered.length} 个模块`;
+
+  const grid = document.getElementById('grid');
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty">没有找到匹配的模块 · 试试其他关键词</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(m => {
+    const c = colors[m.bank];
+    const phaseLabels = [];
+    if (m.phases.includes('summer')) phaseLabels.push('<span class="phase-dot s">☀️暑假</span>');
+    if (m.phases.includes('school')) phaseLabels.push('<span class="phase-dot t">📚开学</span>');
+    if (m.phases.includes('autumn')) phaseLabels.push('<span class="phase-dot f">🍂秋假</span>');
+    return `
+      <div class="card ${c}" onclick="openModal(modules[${modules.indexOf(m)}])">
+        <div class="card-header">
+          <span class="card-code ${c}">${emojis[m.bank]} ${m.id}</span>
+          <div class="card-meta"><span>⏱️ ${m.time}</span><span>🎯 ${m.targets}</span></div>
+        </div>
+        <div class="card-title">${m.title}</div>
+        <div class="card-desc">${m.desc}</div>
+        <div class="card-tags">
+          ${phaseLabels.join('')}
+          <span class="card-tag">${banks[m.bank]}</span>
+          <span class="card-tag target">${m.subjects}</span>
+        </div>
+        <div class="expand-hint">点击查看详细步骤 →</div>
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('search').addEventListener('input', render);
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
